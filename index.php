@@ -34,7 +34,7 @@
   .hero-content {
     transition: all 1s ease-in-out;
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
     color: white; /* default  */
   }
 
