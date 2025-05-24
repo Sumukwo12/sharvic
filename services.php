@@ -1,7 +1,7 @@
 <?php include 'includes/header.php'; ?>
 
 <!-- Page Banner -->
-<section class="page-banner" style="background-image: url('images/serv.jpeg'); background-size: cover; background-position: center; padding: 110px 0; color: #ffc741; text-align: center;">
+<section class="page-banner" style="background-image: url('images/serv.jpeg'); background-size: cover; background-position: center; padding: 110px 0; color: #131e32; text-align: center;">
     <div class="container">
         <h1>Our Services</h1>
         <p>Explore the range of services we offer</p>

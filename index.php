@@ -34,7 +34,7 @@
   .hero-content {
     transition: all 1s ease-in-out;
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(20px);
     color: white; /* default  */
   }
 
@@ -48,9 +48,10 @@
   <!-- Background Images -->
   <div class="hero-bg active" style="background-image: url('images/tt.jpg');"></div>
   <div class="hero-bg" style="background-image: url('images/ravine.jpeg');"></div>
-  <div class="hero-bg" style="background-image: url('images/ravine (1).jpg');"></div>
+  <div class="hero-bg" style="background-image: url('images/ravine (2).jpeg');"></div>
   <div class="hero-bg" style="background-image: url('images/highlight3.jpg');"></div>
-  <div class="hero-bg" style="background-image: url('images/kkiota.jpeg');"></div>
+  <div class="hero-bg" style="background-image: url('images/highlight2.jpg');"></div>
+    <div class="hero-bg" style="background-image: url('images/building2.jpg');"></div>
 
   <!-- Text Container -->
   <div class="container">
@@ -68,7 +69,7 @@
 <script>
   const backgrounds = document.querySelectorAll("#hero-section .hero-bg");
   const content = document.getElementById("hero-content");
-  const textColors = ["#131e32", "#ffeb3b", "#00e5ff", "#131e32", "#ff4081"]; // Colors per image
+  const textColors = ["#131e32", "#ffeb3b", "#ffc741", "#fff", "#ffc741", "#ffc741"];
   let current = 0;
 
   setInterval(() => {

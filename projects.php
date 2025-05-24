@@ -2,7 +2,7 @@
 <?php include 'includes/db_connect.php'; ?>
 
 <!-- Page Banner -->
-<section class="page-banner" style="background-image: url('images/img2.jpg'); background-size: cover; background-position: center; padding: 120px 0; color: #fff; text-align: center;">
+<section class="page-banner" style="background-image: url('images/water2.jpg'); background-size: cover; background-position: center; padding: 120px 0; color: #131e32; text-align: center;">
     <div class="container">
         <h1>Our Projects</h1>
         <p>Explore our portfolio of completed and ongoing projects</p>
