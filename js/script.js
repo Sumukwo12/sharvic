@@ -156,4 +156,75 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     })
   })
+
+  // Scroll Animation Observer
+  const observerOptions = {
+    threshold: 0.4,
+    rootMargin: "0px 0px -50px 0px",
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("animate")
+        // Optional: Stop observing once animated
+        observer.unobserve(entry.target)
+      }
+    })
+  }, observerOptions)
+
+  // Add scroll animations to cards
+  const animatedElements = document.querySelectorAll(
+    ".service-card, .project-card, .partner-logo, .partner-card, .highlight-card, .benefit-card, .value-card, .testimonial, .value-item, .col, .fade-in",
+  )
+
+  animatedElements.forEach((element) => {
+    observer.observe(element)
+  })
+
+  // Add fade-in class to section titles and other elements
+  const sectionTitles = document.querySelectorAll(".section-title")
+  sectionTitles.forEach((title) => {
+    title.classList.add("fade-in")
+    observer.observe(title)
+  })
+
+  // Add fade-in to about content
+  const aboutContent = document.querySelector(".about-content")
+  if (aboutContent) {
+    aboutContent.classList.add("fade-in")
+    observer.observe(aboutContent)
+  }
+
+  // Add fade-in to hero content
+  const heroContent = document.querySelector(".hero-content")
+  if (heroContent) {
+    heroContent.classList.add("fade-in")
+    observer.observe(heroContent)
+  }
 })
+
+// Alternative scroll animation function for older browsers
+function initScrollAnimations() {
+  const elements = document.querySelectorAll(".service-card, .project-card, .partner-logo, .partner-card, .highlight-card, .benefit-card, .testimonial, .col, .value-card, .value-item")
+
+  function checkScroll() {
+    elements.forEach((element) => {
+      const elementTop = element.getBoundingClientRect().top
+      const elementVisible = 150
+
+      if (elementTop < window.innerHeight - elementVisible) {
+        element.classList.add("animate")
+      }
+    })
+  }
+
+  // Fallback for browsers that don't support IntersectionObserver
+  if (!window.IntersectionObserver) {
+    window.addEventListener("scroll", checkScroll)
+    checkScroll() // Check on load
+  }
+}
+
+// Initialize fallback animations
+initScrollAnimations()
