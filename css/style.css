@@ -489,8 +489,8 @@ nav .container {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100px;
-  height: 60px;
+  width: 150px;
+  height: 90px;
   transition: all 0.3s ease;
 }
 

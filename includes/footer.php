@@ -8,6 +8,7 @@
                         <span><i class="fas fa-map-marker-alt"></i> Zahra Sign Systems, Road C, Nairobi, Kenya</span>
                         <span><i class="fas fa-envelope"></i> info@sharvic-ea.co.ke</span>
                         <span><i class="fas fa-phone"></i> +254-703-999777</span>
+                        <span><i class="fas fa-clock"></i>Mon-Sat: 8:00am - 17:00pm </span>
                     </div>
                     <div class="socials">
                     <a href="https://www.facebook.com/SHARVICEA"><i class="fab fa-facebook"></i></a>

@@ -18,6 +18,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <div class="container">
                 <div class="contact-info">
                     <span><i class="fas fa-phone"></i> +254-703-999777</span>
+                    <span><i class="fas fa-clock"></i>Mon-Sat: 8:00am - 17:00pm </span>
                     <span><i class="fas fa-envelope"></i> info@sharvic-ea.co.ke</span>
                 </div>
                 <div class="social-media">
