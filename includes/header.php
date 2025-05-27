@@ -33,8 +33,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <div class="container">
                 <div class="logo">
                     <a href="index.php">
-                        <h1>Sharvic East Africa</h1>
-                        <span>Bringing Tomorrow's Technology Today</span>
+                        <img src="images/SharvicLogo.png" alt="Sharvic E.A.LTD - Moving with Technology" class="logo-img">
+                        <div class="logo-text">
+                            <h1>Lawn East Africa</h1>
+                            <span>Bringing Tomorrow's Technology Today</span>
+                        </div>
                     </a>
                 </div>
                 <div class="menu-toggle">

@@ -103,7 +103,7 @@ header {
 .top-bar {
   background-color: #131e32;
   color: #fff;
-  padding: 10x 0;
+  padding: 10px 0;
 }
 
 .top-bar .container {
@@ -141,20 +141,61 @@ nav .container {
 
 .logo a {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 15px;
 }
 
-.logo h1 {
+.logo-img {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+}
+
+.logo-text h1 {
   font-size: 24px;
   font-weight: 700;
-  color: #131e32;
+  color: #0056b3;
   margin: 0;
 }
 
-.logo span {
+.logo-text span {
   font-size: 12px;
   color: #666;
 }
+
+/* Responsive logo adjustments */
+@media screen and (max-width: 768px) {
+  .logo-img {
+    height: 40px;
+  }
+
+  .logo-text h1 {
+    font-size: 20px;
+  }
+
+  .logo-text span {
+    font-size: 11px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .logo a {
+    gap: 10px;
+  }
+
+  .logo-img {
+    height: 35px;
+  }
+
+  .logo-text h1 {
+    font-size: 18px;
+  }
+
+  .logo-text span {
+    font-size: 10px;
+  }
+}
+
 
 .menu-toggle {
   display: none;
