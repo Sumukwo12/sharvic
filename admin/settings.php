@@ -12,18 +12,23 @@ include '../includes/db_connect.php';
 $errors = [];
 $success = false;
 
-// Process password change form
+// password change form
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['change_password'])) {
     $current_password = $_POST['current_password'];
     $new_password = $_POST['new_password'];
     $confirm_password = $_POST['confirm_password'];
     
-    // Default admin credentials (in a real application, these would be stored securely in a database)
-    $admin_username = "admin";
-    $admin_password = "admin123"; // In a real application, this would be hashed
+    // current admin data
+    $admin_id = $_SESSION['admin_id'];
+    $stmt = $conn->prepare("SELECT password FROM admin_users WHERE id = ?");
+    $stmt->bind_param("i", $admin_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $admin = $result->fetch_assoc();
+    $stmt->close();
     
     // Validate current password
-    if ($current_password !== $admin_password) {
+    if (!password_verify($current_password, $admin['password'])) {
         $errors[] = "Current password is incorrect";
     }
     
@@ -37,13 +42,71 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['change_password'])) {
         $errors[] = "New password and confirmation do not match";
     }
     
-    // Update password if no errors
+    // Update password
     if (empty($errors)) {
-        // In a real application, you would update the password in the database
-        // For this example, we'll just show a success message
-        $success = true;
+        $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+        $stmt = $conn->prepare("UPDATE admin_users SET password = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?");
+        $stmt->bind_param("si", $hashed_password, $admin_id);
+        
+        if ($stmt->execute()) {
+            $success = true;
+        } else {
+            $errors[] = "Error updating password: " . $stmt->error;
+        }
+        
+        $stmt->close();
     }
 }
+// Process profile update form
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
+    $username = trim($_POST['username']);
+    $email = trim($_POST['email']);
+    
+    
+    if (empty($username)) {
+        $errors[] = "Username is required";
+    }
+    
+    if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "Please enter a valid email address";
+    }
+    
+    // Check if username already exists 
+    if (empty($errors)) {
+        $admin_id = $_SESSION['admin_id'];
+        $stmt = $conn->prepare("SELECT id FROM admin_users WHERE username = ? AND id != ?");
+        $stmt->bind_param("si", $username, $admin_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows > 0) {
+            $errors[] = "Username already exists";
+        }
+        $stmt->close();
+    }
+    
+    // Update profile
+    if (empty($errors)) {
+        $stmt = $conn->prepare("UPDATE admin_users SET username = ?, email = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?");
+        $stmt->bind_param("ssi", $username, $email, $admin_id);
+        
+        if ($stmt->execute()) {
+            $_SESSION['admin_username'] = $username;
+            $success = true;
+        } else {
+            $errors[] = "Error updating profile: " . $stmt->error;
+        }
+        
+        $stmt->close();
+    }
+}
+$admin_id = $_SESSION['admin_id'];
+$stmt = $conn->prepare("SELECT username, email FROM admin_users WHERE id = ?");
+$stmt->bind_param("i", $admin_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$current_admin = $result->fetch_assoc();
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -63,7 +126,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['change_password'])) {
         
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #ffc147;
+            background-color: #ffc741;
             color: #333;
         }
         
@@ -174,7 +237,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['change_password'])) {
         }
         
         .btn:hover {
-            background-color: #131e32;
+            background-color: #003d7a;
         }
         
         .btn-danger {
@@ -239,7 +302,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['change_password'])) {
         
         .form-control:focus {
             outline: none;
-            border-color: #0056b3;
+            border-color: #131e32;
         }
         
         .settings-section {
@@ -251,13 +314,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['change_password'])) {
             margin-bottom: 15px;
             color: #131e32;
         }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        @media screen and (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="dashboard">
         <div class="sidebar">
             <div class="sidebar-header">
-                <h1>Sharvic East Africa</h1>
+                <h1>Lawn East Africa</h1>
                 <p>Admin Dashboard</p>
             </div>
             <div class="sidebar-menu">
@@ -283,7 +358,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['change_password'])) {
             
             <?php if ($success): ?>
                 <div class="alert alert-success">
-                    Password changed successfully!
+                    Settings updated successfully!
                 </div>
             <?php endif; ?>
             
@@ -297,9 +372,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['change_password'])) {
                 </div>
             <?php endif; ?>
             
+            
             <div class="content-box">
                 <div class="content-header">
-                    <h3>Account Settings</h3>
+                    <h3>Profile Settings</h3>
+                </div>
+                
+                <div class="settings-section">
+                    <h3>Update Profile Information</h3>
+                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" id="username" name="username" class="form-control" value="<?php echo htmlspecialchars($current_admin['username']); ?>" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" class="form-control" value="<?php echo htmlspecialchars($current_admin['email'] ?? ''); ?>">
+                                <small style="color: #666; display: block; margin-top: 5px;"></small>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: right;">
+                            <button type="submit" name="update_profile" class="btn">Update Profile</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            
+            <div class="content-box">
+                <div class="content-header">
+                    <h3>Security Settings</h3>
                 </div>
                 
                 <div class="settings-section">
@@ -310,15 +415,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['change_password'])) {
                             <input type="password" id="current_password" name="current_password" class="form-control" required>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="new_password">New Password</label>
-                            <input type="password" id="new_password" name="new_password" class="form-control" required>
-                            <small style="color: #666; display: block; margin-top: 5px;">Password must be at least 6 characters long.</small>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="confirm_password">Confirm New Password</label>
-                            <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="new_password">New Password</label>
+                                <input type="password" id="new_password" name="new_password" class="form-control" required>
+                                <small style="color: #666; display: block; margin-top: 5px;">Password must be at least 6 characters long.</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirm_password">Confirm New Password</label>
+                                <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+                            </div>
                         </div>
                         
                         <div style="text-align: right;">
@@ -326,11 +433,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['change_password'])) {
                         </div>
                     </form>
                 </div>
+            </div>
+            
+            
+            <div class="content-box">
+                <div class="content-header">
+                    <h3>System Information</h3>
+                </div>
                 
                 <div class="settings-section">
-                    <h3>Website Information</h3>
-                    <p style="margin-bottom: 15px;">This section allows you to update general website information. In a real application, you would be able to edit website title, contact information, social media links, etc.</p>
-                    <p style="color: #666;">Note: This functionality is not implemented in this demo.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                        <div style="background-color: #f9f9f9; padding: 15px; border-radius: 4px;">
+                            <h4 style="color: #131e32; margin-bottom: 10px;">Database Status</h4>
+                            <p style="color: #28a745; font-weight: 500;"><i class="fas fa-check-circle"></i> Connected</p>
+                        </div>
+                        <div style="background-color: #f9f9f9; padding: 15px; border-radius: 4px;">
+                            <h4 style="color: #131e32; margin-bottom: 10px;">Last Login</h4>
+                            <p><?php echo date('M d, Y H:i'); ?></p>
+                        </div>
+                        <div style="background-color: #f9f9f9; padding: 15px; border-radius: 4px;">
+                            <h4 style="color: #131e32; margin-bottom: 10px;">Admin Level</h4>
+                            <p>Super Administrator</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

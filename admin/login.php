@@ -7,24 +7,41 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
     exit;
 }
 
-// Default admin credentials (in a real application, these would be stored securely in a database)
-$admin_username = "admin";
-$admin_password = "admin123"; // In a real application, this would be hashed
+include '../includes/db_connect.php';
 
 $error = "";
 
 // Process login form
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
+    $username = trim($_POST['username']);
     $password = $_POST['password'];
     
-    if ($username === $admin_username && $password === $admin_password) {
-        $_SESSION['admin_logged_in'] = true;
-        $_SESSION['admin_username'] = $username;
-        header("Location: index.php");
-        exit;
+    if (!empty($username) && !empty($password)) {
+        $stmt = $conn->prepare("SELECT id, username, password FROM admin_users WHERE username = ?");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows === 1) {
+            $admin = $result->fetch_assoc();
+            
+            // Verify password
+            if (password_verify($password, $admin['password'])) {
+                $_SESSION['admin_logged_in'] = true;
+                $_SESSION['admin_username'] = $admin['username'];
+                $_SESSION['admin_id'] = $admin['id'];
+                header("Location: index.php");
+                exit;
+            } else {
+                $error = "Invalid username or password";
+            }
+        } else {
+            $error = "Invalid username or password";
+        }
+        
+        $stmt->close();
     } else {
-        $error = "Invalid username or password";
+        $error = "Please enter both username and password";
     }
 }
 ?>
@@ -46,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #131e32;
+            background-color: #f5f5f5;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -56,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .login-container {
             background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 5px 15px #131e32;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             width: 400px;
             padding: 40px;
         }
@@ -99,7 +116,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         .form-group input:focus {
             outline: none;
-            border-color: #0056b3;
+            border-color: #131e32;
         }
         
         .btn {
@@ -136,7 +153,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         
         .back-link a {
-            color: #0056b3;
+            color: #131e32;
             text-decoration: none;
             font-size: 14px;
         }
