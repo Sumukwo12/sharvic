@@ -19,7 +19,7 @@
                 <p>It is noteworthy that over the years, the company has undertaken many challenging projects and accumulated skills, know-how and experience in design and build solutions, project management services, building trades and related engineering works.</p>
             </div>
             <div class="col" style="flex: 1; min-width: 300px;">
-                <img src="images/about-img2.jpg" alt="About Lawn East Africa" style="width: 100%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);">
+                <img src="images/about-img2.jpg" alt="About Sharvic East Africa Limited" style="width: 100%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);">
             </div>
         </div>
     </div>

@@ -35,7 +35,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     <a href="index.php">
                         <img src="images/SharvicLogo.png" alt="Sharvic E.A.LTD - Moving with Technology" class="logo-img">
                         <div class="logo-text">
-                            <h1>Lawn East Africa</h1>
+                            <h1>Sharvic East Africa Limited</h1>
                             <span>Bringing Tomorrow's Technology Today</span>
                         </div>
                     </a>

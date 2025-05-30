@@ -47,12 +47,12 @@ img {
 }
 
 .btn:hover {
-  background-color: #003d7a;
+  background-color: #131e32;
 }
 
 .btn-outline {
-  background-color: transparent;
-  border: 2px solid #ffc741;
+  background-color: #131e32;
+  border: 2px solid transparent;
   color: #ffc741;
 }
 
@@ -136,17 +136,17 @@ nav .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 0;
+  padding: 10px 0;
 }
 
 .logo a {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 5px;
 }
 
 .logo-img {
-  height: 50px;
+  height: 65px;
   width: auto;
   object-fit: contain;
 }
